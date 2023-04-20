@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@omrijden.nl/plaatsnamen": "*",
     "@types/node": "18.15.12",
     "@types/react": "18.0.37",
     "@types/react-dom": "18.0.11",
