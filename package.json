@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "name": "omrijden",
+  "workspaces": [
+    "packages/*",
+    "site"
+  ]
+}
