@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
-import plaatsnamen from '@omrijden.nl/plaatsnamen'
+import plaatsnamen from '@/data/plaatsnames'
 import Link from 'next/link'
 import slugify from 'slugify'
 
