@@ -39,6 +39,7 @@ export default function Page({ slug }: Props) {
             </Head>
             <main className={styles.main}>
                 <div className={styles.grid}>
+                    <h1>{slug}</h1>
                     <ul>
                         {plaatsnamen.map((plaatnaam: string) => (
                             <li key={slugify(plaatnaam)}>
