@@ -1,0 +1,12 @@
+name = "ndw-incidents"
+main = "src/index.ts"
+compatibility_date = "2023-04-22"
+usage_model = "bundled"
+logpush = true
+
+kv_namespaces = [
+  { binding = "STORE", id = "430a50bad9ae4147bc343b7103c2502d", preview_id = "430a50bad9ae4147bc343b7103c2502d" },
+]
+
+[triggers]
+crons = ["*/1 * * * *"]

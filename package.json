@@ -3,6 +3,7 @@
   "name": "omrijden",
   "workspaces": [
     "packages/*",
-    "site"
+    "site",
+    "workers/*"
   ]
 }

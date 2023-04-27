@@ -1,0 +1,8 @@
+{
+  "name": "@omrijden/xml-node-stream",
+  "version": "1.0.0",
+  "description": "plucks xml nodes from a stream",
+  "main": "index.ts",
+  "author": "",
+  "license": "ISC"
+}
