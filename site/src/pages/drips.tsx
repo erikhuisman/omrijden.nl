@@ -1,9 +1,21 @@
 import styles from '@/styles/Home.module.css';
 import { D1Database } from '@cloudflare/workers-types';
-import { SimpleVmsUnit } from '@omrijden/simplify';
 import { GetServerSideProps, GetServerSidePropsResult } from 'next';
 import Head from 'next/head';
 import { D1QB, OrderTypes } from 'workers-qb';
+
+export interface SimpleVmsUnit {
+  id: string;
+  updatedAt: string;
+  image?: ImageData;
+  text?: string;
+}
+
+const parser = new XMLParser({
+  attributeNamePrefix: '',
+  ignoreAttributes: false,
+  ignoreDeclaration: true,
+});
 
 export const config = {
   runtime: 'experimental-edge',
