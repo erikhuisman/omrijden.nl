@@ -38,15 +38,13 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
   const { DB } = (process.env as { DB: D1Database })
   const qb = new D1QB(DB);
 
-  console.log('DB', DB)
-
-
   const fetched = await qb.fetchAll({
     tableName: 'VmsUnit',
     fields: ['id', 'text', 'image'],
     orderBy: {
       updatedAt: OrderTypes.DESC,
     },
+    limit: 50,
   });
 
   return {
@@ -82,7 +80,7 @@ export default function Drips({ simpleDrips }: Props) {
                       border: '10px solid black',
                     }}
                     alt={unit.text?.split('\n').join(' ')}
-                    src={`data:${unit.image.mimeType};base64,${unit.image.binary}`}
+                    src={`data:${JSON.parse(unit.image).mimeType};base64,${JSON.parse(unit.image).binary}`}
                   />
                 )}
               </li>
