@@ -2,6 +2,7 @@ import styles from '@/styles/Home.module.css';
 import { D1Database } from '@cloudflare/workers-types';
 import { GetServerSideProps, GetServerSidePropsResult } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import { D1QB, OrderTypes } from 'workers-qb';
 
 interface ImageData {
@@ -12,7 +13,7 @@ interface ImageData {
 export interface SimpleVmsUnit {
   id: string;
   updatedAt: string;
-  image?: ImageData;
+  image?: string;
   text?: string;
 }
 
@@ -58,6 +59,20 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
   }
 }
 
+export const MatrixSign = ({ unit }: { unit: SimpleVmsUnit }) => {
+  if (!unit.image) return null;
+  const image: ImageData = JSON.parse(unit.image || '{}');
+  return (
+    <Image
+      style={{
+        border: '10px solid black',
+      }}
+      alt={unit.text?.split('\n').join(' ') || ''}
+      src={`data:${image.mimeType};base64,${image.binary}`}
+    />
+  )
+}
+
 
 export default function Drips({ simpleDrips }: Props) {
   return (
@@ -74,15 +89,6 @@ export default function Drips({ simpleDrips }: Props) {
             {simpleDrips.map((unit: SimpleVmsUnit) => (
               <li key={unit.id}>
                 {!unit.image && unit.text?.split('\n').map((line: string) => <>{line}<br /></>)}
-                {unit.image && (
-                  <img
-                    style={{
-                      border: '10px solid black',
-                    }}
-                    alt={unit.text?.split('\n').join(' ')}
-                    src={`data:${JSON.parse(unit.image).mimeType};base64,${JSON.parse(unit.image).binary}`}
-                  />
-                )}
               </li>
             ))}
           </ul>
