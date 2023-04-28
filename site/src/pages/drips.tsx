@@ -63,13 +63,21 @@ export const MatrixSign = ({ unit }: { unit: SimpleVmsUnit }) => {
   if (!unit.image) return null;
   const image: ImageData = JSON.parse(unit.image || '{}');
   return (
-    <Image
-      style={{
-        border: '10px solid black',
-      }}
-      alt={unit.text?.split('\n').join(' ') || ''}
-      src={`data:${image.mimeType};base64,${image.binary}`}
-    />
+    <>
+      <Image
+        style={{
+          border: '10px solid black',
+        }}
+        alt={unit.text?.split('\n').join(' ') || ''}
+        src={`data:${image.mimeType};base64,${image.binary}`}
+      />
+      <pre>
+        {unit.image}
+      </pre>
+      <pre>
+        {JSON.stringify(unit, null, 2)}
+      </pre>
+    </>
   )
 }
 
