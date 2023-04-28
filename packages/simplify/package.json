@@ -1,0 +1,11 @@
+{
+  "name": "@omrijden/simplify",
+  "version": "1.0.0",
+  "description": "simplifies datexII to simplified types",
+  "main": "index.ts",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fast-xml-parser": "^4.2.2"
+  }
+}
