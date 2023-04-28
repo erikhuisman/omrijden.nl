@@ -44,6 +44,7 @@ export default {
     if (!result.body) return new Response('ok: no body', { status: 500 });
 
     let lastPutItem: Promise<void> | undefined;
+
     const { writable, endOfStream } = xmlNodeStream(
       tagName,
       (xmlNode: string) => {
@@ -61,7 +62,7 @@ export default {
       .pipeTo(writable);
 
     const nodeCount = await endOfStream;
-    await lastPutItem;
+    if (lastPutItem) await lastPutItem;
     return new Response(`ok: ${nodeCount} items`);
   },
 };
