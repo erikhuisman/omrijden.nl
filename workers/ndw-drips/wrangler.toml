@@ -1,0 +1,13 @@
+name = "ndw-drips"
+main = "src/index.ts"
+compatibility_date = "2023-04-22"
+usage_model = "bundled"
+logpush = true
+
+[triggers]
+crons = ["*/1 * * * *"]
+
+[[ d1_databases ]]
+binding = "DB" # i.e. available in your Worker on env.DB
+database_name = "drips"
+database_id = "16733ae0-3976-46ca-a819-dbedf13d51df"

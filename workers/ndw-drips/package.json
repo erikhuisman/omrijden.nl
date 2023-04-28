@@ -1,0 +1,22 @@
+{
+  "name": "ndw-drips",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20230404.0",
+    "better-sqlite3": "^8.0.1",
+    "typescript": "^5.0.4",
+    "wrangler": "2.17.0"
+  },
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler publish",
+    "wrangler": "wrangler",
+    "createdb": "wrangler d1 execute drips --file=./schema.sql"
+  },
+  "dependencies": {
+    "@omrijden/simplify": "*",
+    "@omrijden/xml-node-stream": "*",
+    "workers-qb": "^0.1.7"
+  }
+}
