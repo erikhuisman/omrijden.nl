@@ -4,6 +4,11 @@ import { GetServerSideProps, GetServerSidePropsResult } from 'next';
 import Head from 'next/head';
 import { D1QB, OrderTypes } from 'workers-qb';
 
+interface ImageData {
+  binary: string;
+  encoding: string;
+  mimeType: string;
+}
 export interface SimpleVmsUnit {
   id: string;
   updatedAt: string;
