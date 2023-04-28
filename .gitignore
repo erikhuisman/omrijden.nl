@@ -1,3 +1,4 @@
 .vscode
 node_modules
 workers/ndw-drips/.wrangler
+.vercel

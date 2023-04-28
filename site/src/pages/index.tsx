@@ -1,8 +1,6 @@
-import plaatsnamen from '@/data/plaatsnames'
 import styles from '@/styles/Home.module.css'
 import Head from 'next/head'
 import Link from 'next/link'
-import slugify from 'slugify'
 
 export default function Home() {
   return (
@@ -17,15 +15,6 @@ export default function Home() {
         <div className={styles.grid}>
           <ul>
             <li><Link href="/drips">Drips stream</Link></li>
-          </ul>
-          <ul>
-            {plaatsnamen.map((plaatnaam: string) => (
-              <li key={slugify(plaatnaam)}>
-                <Link href={slugify(plaatnaam)}>
-                  {plaatnaam}
-                </Link>
-              </li>
-            ))}
           </ul>
         </div>
       </main>

@@ -1,20 +1,50 @@
 import styles from '@/styles/Home.module.css';
+import { D1Database } from '@cloudflare/workers-types';
 import { SimpleVmsUnit } from '@omrijden/simplify';
 import { GetServerSideProps, GetServerSidePropsResult } from 'next';
 import Head from 'next/head';
+import { D1QB, OrderTypes } from 'workers-qb';
+
+export const config = {
+  runtime: 'experimental-edge',
+};
 
 interface Props {
   simpleDrips: SimpleVmsUnit[];
 }
 
+export interface ProcessEnv {
+  [key: string]: string | undefined
+}
+
+declare var process: {
+  env: {
+    DB: D1Database
+  }
+}
 
 export const getServerSideProps: GetServerSideProps = async ({ req, params, query }): Promise<GetServerSidePropsResult<Props>> => {
   const { DB } = (process.env as { DB: D1Database })
+  const qb = new D1QB(DB);
 
   console.log('DB', DB)
+
+
+  const fetched = await qb.fetchAll({
+    tableName: 'VmsUnit',
+    fields: ['id', 'text', 'image'],
+    orderBy: {
+      updatedAt: OrderTypes.DESC,
+    },
+  });
+
   return {
     props: {
-      simpleDrips: [] as SimpleVmsUnit[],
+      simpleDrips: fetched.results?.map(result => ({
+        id: result.id,
+        text: result.text || undefined,
+        image: result.image || undefined,
+      }) as SimpleVmsUnit) || [],
     }
   }
 }
