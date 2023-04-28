@@ -11,12 +11,6 @@ export interface SimpleVmsUnit {
   text?: string;
 }
 
-const parser = new XMLParser({
-  attributeNamePrefix: '',
-  ignoreAttributes: false,
-  ignoreDeclaration: true,
-});
-
 export const config = {
   runtime: 'experimental-edge',
 };
