@@ -1,7 +1,7 @@
 name = "ndw-drips"
 main = "src/index.ts"
 compatibility_date = "2023-04-22"
-usage_model = "bundled"
+usage_model = "unbound"
 logpush = true
 
 [triggers]

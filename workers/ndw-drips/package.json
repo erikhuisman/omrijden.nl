@@ -12,6 +12,7 @@
     "start": "wrangler dev",
     "deploy": "wrangler publish",
     "wrangler": "wrangler",
+    "dev": "wrangler dev --local --persist",
     "createdb": "wrangler d1 execute drips --file=./schema.sql"
   },
   "dependencies": {

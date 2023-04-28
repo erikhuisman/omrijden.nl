@@ -6,7 +6,7 @@ interface ImageData {
   mimeType: string;
 }
 
-interface SimpleVmsUnit {
+export interface SimpleVmsUnit {
   id: string;
   updatedAt: string;
   image?: ImageData;
