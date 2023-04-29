@@ -67,21 +67,10 @@ export const MatrixSign = ({ unit }: { unit: SimpleVmsUnit }) => {
   if (!unit.image) return null;
   const image: ImageData = JSON.parse(unit.image || '{}');
   return (
-    <>
-      <Image
-        style={{
-          border: '10px solid black',
-        }}
-        alt={unit.text?.split('\n').join(' ') || ''}
-        src={`data:${image.mimeType};base64,${image.binary}`}
-      />
-      <pre>
-        {unit.image}
-      </pre>
-      <pre>
-        {JSON.stringify(unit, null, 2)}
-      </pre>
-    </>
+    <Image
+      alt={unit.text?.split('\n').join(' ') || ''}
+      src={`data:${image.mimeType};base64,${image.binary}`}
+    />
   )
 }
 
@@ -97,14 +86,17 @@ export default function Drips({ simpleDrips }: Props) {
       </Head>
       <main className={styles.main}>
         <div className={styles.grid}>
-          <ul>
-            {simpleDrips.map((unit: SimpleVmsUnit) => (
-              <li key={unit.id}>
-                {!unit.image && unit.text?.split('\n').map((line: string) => <>{line}<br /></>)}
-                <MatrixSign unit={unit} />
-              </li>
-            ))}
-          </ul>
+          <div className={styles.drip}>
+            <h1>Drips stream</h1>
+            <ul>
+              {simpleDrips.map((unit: SimpleVmsUnit) => (
+                <li key={unit.id}>
+                  {!unit.image && unit.text?.split('\n').map((line: string) => <>{line}<br /></>)}
+                  <MatrixSign unit={unit} />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </main >
     </>
