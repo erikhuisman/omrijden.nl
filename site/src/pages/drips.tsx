@@ -42,8 +42,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
   const fetched = await qb.fetchAll({
     tableName: 'VmsUnit',
     fields: ['id', 'text', 'image'],
+    where: {
+      conditions: ['text IS NOT NULL', 'image IS NOT NULL']
+    },
     orderBy: {
-      updatedAt: OrderTypes.DESC,
+      updatedAt: OrderTypes.ASC,
     },
     limit: 50,
   });
@@ -54,6 +57,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
         id: result.id,
         text: result.text || undefined,
         image: result.image || undefined,
+        updatedAt: result.updatedAt,
       }) as SimpleVmsUnit) || [],
     }
   }
