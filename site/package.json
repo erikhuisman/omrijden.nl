@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npx wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat --local --d1=DB",
+    "dev": "npx wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat --local --service=BB=ndw-drips",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

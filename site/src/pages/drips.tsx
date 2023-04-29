@@ -35,15 +35,23 @@ declare var process: {
   }
 }
 
+const dotDrips = JSON.stringify({
+  binary: 'iVBORw0KGgoAAAANSUhEUgAAAMAAAACACAIAAADS5vE8AAAAaUlEQVR42u3SsQ0AAAjDsP7/NEwdEQ/YJ0RJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4DclBQbCQAAAAMBhAaeaGuba4R2AAAAAAElFTkSuQmCC',
+  encoding: 'base64',
+  mimeType: 'image/png',
+})
+
 export const getServerSideProps: GetServerSideProps = async ({ req, params, query }): Promise<GetServerSidePropsResult<Props>> => {
   const { DB } = (process.env as { DB: D1Database })
   const qb = new D1QB(DB);
+
+  console.log('DB', DB, qb)
 
   const fetched = await qb.fetchAll({
     tableName: 'VmsUnit',
     fields: ['id', 'text', 'image'],
     where: {
-      conditions: ['image IS NOT NULL']
+      conditions: ['image IS NOT NULL', `images is not "${dotDrips}"`],
     },
     orderBy: {
       updatedAt: OrderTypes.ASC,
