@@ -1,9 +1,6 @@
 import styles from '@/styles/Home.module.css';
 import { D1Database } from '@cloudflare/workers-types';
-import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import parseISO from 'date-fns/parseISO';
 
-import { nl } from 'date-fns/locale';
 import { GetServerSideProps, GetServerSidePropsResult } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -109,10 +106,7 @@ export default function Drips({ simpleDrips }: Props) {
                   {!unit.image && unit.text?.split('\n').map((line: string) => <>{line}<br /></>)}
                   <MatrixSign unit={unit} />
                   <br />
-                  {formatDistanceToNow(
-                    parseISO(unit.updatedAt),
-                    { includeSeconds: true, addSuffix: true, locale: nl }
-                  )}
+                  {unit.updatedAt}
                 </li>
               ))}
             </ul>
