@@ -18,7 +18,7 @@ export interface SimpleVmsUnit {
 }
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 };
 
 interface Props {
@@ -101,6 +101,7 @@ export default function Drips({ simpleDrips }: Props) {
             {simpleDrips.map((unit: SimpleVmsUnit) => (
               <li key={unit.id}>
                 {!unit.image && unit.text?.split('\n').map((line: string) => <>{line}<br /></>)}
+                <MatrixSign unit={unit} />
               </li>
             ))}
           </ul>
