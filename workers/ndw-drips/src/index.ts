@@ -30,46 +30,64 @@ export interface Env {
 const tagName = 'vmsUnit';
 const endpoint = 'https://opendata.ndw.nu/DRIPS.xml.gz';
 
+const syncDrips = async (env: Env) => {
+  const qb = new D1QB(env.DB);
+  await qb.delete({
+    tableName: 'VmsUnit',
+    where: {
+      conditions: ['id is not null'],
+    },
+  });
+
+  const result = await fetch(endpoint);
+  if (!result.body) return new Response('ok: no body', { status: 500 });
+
+  let lastInsert: Promise<Result> | undefined;
+
+  const { writable, endOfStream } = xmlNodeStream(
+    tagName,
+    (xmlNode: string) => {
+      const vmsUnit = simplifyVmsUnit(xmlNode);
+
+      // skip update if no text or image
+      if (!vmsUnit.text && !vmsUnit.image) return;
+
+      lastInsert = qb.insert({
+        tableName: 'VmsUnit',
+        data: {
+          id: vmsUnit.id,
+          updatedAt: vmsUnit.updatedAt,
+          image: (vmsUnit.image && JSON.stringify(vmsUnit.image)) || null,
+          text: vmsUnit.text || null,
+        },
+      });
+    },
+  );
+
+  result.body
+    .pipeThrough(new DecompressionStream('gzip'))
+    .pipeThrough(new TextDecoderStream())
+    .pipeTo(writable);
+
+  const nodeCount = await endOfStream;
+  if (lastInsert) await lastInsert;
+  return nodeCount;
+};
+
 export default {
+  async scheduled(
+    event: ScheduledEvent,
+    env: Env,
+    ctx: ExecutionContext,
+  ): Promise<Response | void> {
+    return ctx.waitUntil(syncDrips(env));
+  },
   async fetch(
     request: Request,
     env: Env,
     ctx: ExecutionContext,
   ): Promise<Response> {
-    const result = await fetch(endpoint);
-    if (!result.body) return new Response('ok: no body', { status: 500 });
-
-    const qb = new D1QB(env.DB);
-    let lastInsert: Promise<Result> | undefined;
-
-    const { writable, endOfStream } = xmlNodeStream(
-      tagName,
-      (xmlNode: string) => {
-        const vmsUnit = simplifyVmsUnit(xmlNode);
-
-        // skip update if no text or image
-        if (!vmsUnit.text && !vmsUnit.image) return;
-
-        lastInsert = qb.insert({
-          tableName: 'VmsUnit',
-          data: {
-            id: vmsUnit.id,
-            updatedAt: vmsUnit.updatedAt,
-            image: (vmsUnit.image && JSON.stringify(vmsUnit.image)) || null,
-            text: vmsUnit.text || null,
-          },
-          returning: '*',
-        });
-      },
-    );
-
-    result.body
-      .pipeThrough(new DecompressionStream('gzip'))
-      .pipeThrough(new TextDecoderStream())
-      .pipeTo(writable);
-
-    const nodeCount = await endOfStream;
-    if (lastInsert) await lastInsert;
+    const nodeCount = await syncDrips(env);
     return new Response(`ok: ${nodeCount} items`);
   },
 };
