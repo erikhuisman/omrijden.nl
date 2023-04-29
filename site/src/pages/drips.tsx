@@ -95,6 +95,7 @@ export default function Drips({ simpleDrips }: Props) {
                 <li key={unit.id}>
                   {!unit.image && unit.text?.split('\n').map((line: string) => <>{line}<br /></>)}
                   <MatrixSign unit={unit} />
+                  {unit.updatedAt}
                 </li>
               ))}
             </ul>
