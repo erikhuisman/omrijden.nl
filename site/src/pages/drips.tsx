@@ -51,7 +51,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
       conditions: ['image IS NOT NULL'],
     },
     orderBy: {
-      updatedAt: OrderTypes.ASC,
+      updatedAt: OrderTypes.DESC,
     },
     limit: 50,
   });
