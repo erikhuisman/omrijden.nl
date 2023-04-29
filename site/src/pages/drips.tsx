@@ -36,12 +36,6 @@ declare var process: {
   }
 }
 
-const dotDrips = JSON.stringify({
-  binary: 'iVBORw0KGgoAAAANSUhEUgAAAMAAAACACAIAAADS5vE8AAAAaUlEQVR42u3SsQ0AAAjDsP7/NEwdEQ/YJ0RJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4DclBQbCQAAAAMBhAaeaGuba4R2AAAAAAElFTkSuQmCC',
-  encoding: 'base64',
-  mimeType: 'image/png',
-})
-
 export const getServerSideProps: GetServerSideProps = async ({ req, params, query }): Promise<GetServerSidePropsResult<Props>> => {
   const { DB } = (process.env as { DB: D1Database })
   const qb = new D1QB(DB);
@@ -58,10 +52,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
     },
     limit: 50,
   });
-
-
-  console.log('DB', DB, qb, fetched)
-
 
   return {
     props: {
@@ -105,8 +95,6 @@ export default function Drips({ simpleDrips }: Props) {
                 <li key={unit.id}>
                   {!unit.image && unit.text?.split('\n').map((line: string) => <>{line}<br /></>)}
                   <MatrixSign unit={unit} />
-                  <br />
-                  {unit.updatedAt}
                 </li>
               ))}
             </ul>
