@@ -41,8 +41,8 @@ declare var process: {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, params, query }): Promise<GetServerSidePropsResult<Props>> => {
   const { DB } = (process.env as { DB: D1Database })
-  const qb = new D1QB(DB);
 
+  const qb = new D1QB(DB);
 
   const fetched = await qb.fetchAll({
     tableName: 'VmsUnit',
