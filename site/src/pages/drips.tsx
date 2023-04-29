@@ -18,7 +18,7 @@ export interface SimpleVmsUnit {
 }
 
 export const config = {
-  runtime: 'edge',
+  runtime: 'experimental-edge',
 };
 
 interface Props {
@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
     tableName: 'VmsUnit',
     fields: ['id', 'text', 'image'],
     where: {
-      conditions: ['text IS NOT NULL', 'image IS NOT NULL']
+      conditions: ['image IS NOT NULL']
     },
     orderBy: {
       updatedAt: OrderTypes.ASC,
