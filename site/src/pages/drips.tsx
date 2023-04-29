@@ -1,6 +1,9 @@
 import styles from '@/styles/Home.module.css';
 import { D1Database } from '@cloudflare/workers-types';
 
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
+import { nl } from 'date-fns/locale';
+import parseISO from 'date-fns/parseISO';
 import { GetServerSideProps, GetServerSidePropsResult } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -43,7 +46,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
 
   const fetched = await qb.fetchAll({
     tableName: 'VmsUnit',
-    fields: ['id', 'text', 'image'],
+    fields: ['id', 'text', 'image', 'updatedAt'],
     where: {
       conditions: ['image IS NOT NULL'],
     },
@@ -95,7 +98,7 @@ export default function Drips({ simpleDrips }: Props) {
                 <li key={unit.id}>
                   {!unit.image && unit.text?.split('\n').map((line: string) => <>{line}<br /></>)}
                   <MatrixSign unit={unit} />
-                  {unit.updatedAt}
+                  {formatDistanceToNow(parseISO(unit.updatedAt), { locale: nl, addSuffix: true, includeSeconds: true })}
                 </li>
               ))}
             </ul>
