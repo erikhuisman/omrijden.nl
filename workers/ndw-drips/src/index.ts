@@ -1,4 +1,4 @@
-import { simplifyVmsUnit } from '@omrijden/simplify';
+import { simplifyDripDisplay } from '@omrijden/simplify';
 import xmlNodeStream from '@omrijden/xml-node-stream';
 import { D1QB, Result } from 'workers-qb';
 
@@ -14,7 +14,6 @@ import { D1QB, Result } from 'workers-qb';
 
 export interface Env {
   // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
-  STORE: KVNamespace;
   DB: D1Database;
   //
   // Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
@@ -33,7 +32,7 @@ const endpoint = 'https://opendata.ndw.nu/DRIPS.xml.gz';
 const syncDrips = async (env: Env) => {
   const qb = new D1QB(env.DB);
   await qb.delete({
-    tableName: 'VmsUnit',
+    tableName: 'display',
     where: {
       conditions: ['id is not null'],
     },
@@ -47,18 +46,18 @@ const syncDrips = async (env: Env) => {
   const { writable, endOfStream } = xmlNodeStream(
     tagName,
     (xmlNode: string) => {
-      const vmsUnit = simplifyVmsUnit(xmlNode);
+      const display = simplifyDripDisplay(xmlNode);
 
       // skip update if no text or image
-      if (!vmsUnit.text && !vmsUnit.image) return;
+      if (!display.text && !display.image) return;
 
       lastInsert = qb.insert({
-        tableName: 'VmsUnit',
+        tableName: 'display',
         data: {
-          id: vmsUnit.id,
-          updatedAt: vmsUnit.updatedAt,
-          image: (vmsUnit.image && JSON.stringify(vmsUnit.image)) || null,
-          text: vmsUnit.text || null,
+          id: display.id,
+          updatedAt: display.updatedAt,
+          image: (display.image && JSON.stringify(display.image)) || null,
+          text: display.text || null,
         },
       });
     },

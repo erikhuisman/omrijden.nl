@@ -20,11 +20,6 @@ export interface SimpleVmsUnit {
   image?: string;
   text?: string;
 }
-
-export const config = {
-  runtime: 'experimental-edge',
-};
-
 interface Props {
   simpleDrips: SimpleVmsUnit[];
 }
@@ -39,16 +34,21 @@ declare var process: {
   }
 }
 
+export const config = {
+  runtime: 'experimental-edge',
+};
+
+
 export const getServerSideProps: GetServerSideProps = async ({ req, params, query }): Promise<GetServerSidePropsResult<Props>> => {
   const { DB } = (process.env as { DB: D1Database })
 
   const qb = new D1QB(DB);
 
   const fetched = await qb.fetchAll({
-    tableName: 'VmsUnit',
-    fields: ['id', 'text', 'image', 'updatedAt'],
+    tableName: 'display',
+    fields: ['id', 'text', 'updatedAt'],
     where: {
-      conditions: ['image IS NOT NULL'],
+      conditions: ['text IS NOT NULL'],
     },
     orderBy: {
       updatedAt: OrderTypes.DESC,
@@ -94,7 +94,7 @@ export default function Drips({ simpleDrips }: Props) {
           <div className={styles.drip}>
             <h1>Drips stream</h1>
             <ul>
-              {simpleDrips.map((unit: SimpleVmsUnit) => (
+              {simpleDrips?.map((unit: SimpleVmsUnit) => (
                 <li key={unit.id}>
                   {!unit.image && unit.text?.split('\n').map((line: string) => <>{line}<br /></>)}
                   <MatrixSign unit={unit} />

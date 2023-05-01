@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS VmsUnit;
-CREATE TABLE VmsUnit (
+DROP TABLE IF EXISTS display;
+CREATE TABLE display (
     id TEXT,
     image TEXT, 
     text TEXT, 

@@ -6,6 +6,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/geojson": "^7946.0.10",
     "fast-xml-parser": "^4.2.2"
   }
 }

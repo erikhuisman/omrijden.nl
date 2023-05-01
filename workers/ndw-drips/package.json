@@ -9,11 +9,11 @@
   },
   "private": true,
   "scripts": {
-    "start": "wrangler dev",
+    "start": "wrangler dev --local --persist",
     "deploy": "wrangler publish",
     "wrangler": "wrangler",
-    "dev": "wrangler dev --local --persist",
-    "createdb": "wrangler d1 execute drips --file=./schema.sql"
+    "schema": "wrangler d1 execute drips --file=./schema.sql --local",
+    "schema:deploy": "wrangler d1 execute drips --file=./schema.sql"
   },
   "dependencies": {
     "@omrijden/simplify": "*",
