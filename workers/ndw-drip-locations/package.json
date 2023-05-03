@@ -1,5 +1,5 @@
 {
-  "name": "ndw-drips",
+  "name": "ndw-drip-locations",
   "version": "0.0.0",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230419.0",

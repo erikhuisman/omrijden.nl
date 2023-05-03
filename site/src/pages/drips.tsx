@@ -19,6 +19,8 @@ export interface SimpleVmsUnit {
   updatedAt: string;
   image?: string;
   text?: string;
+  title: string;
+  location: string;
 }
 interface Props {
   simpleDrips: SimpleVmsUnit[];
@@ -46,14 +48,18 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
 
   const fetched = await qb.fetchAll({
     tableName: 'display',
-    fields: ['id', 'text', 'updatedAt'],
+    fields: ['display.id', 'text', 'updatedAt', 'location.title', 'location.location', 'image'],
     where: {
-      conditions: ['text IS NOT NULL'],
+      conditions: ['image IS NOT NULL'],
     },
     orderBy: {
       updatedAt: OrderTypes.DESC,
     },
     limit: 50,
+    join: {
+      table: 'location',
+      on: 'display.id = location.id',
+    }
   });
 
   return {
@@ -63,17 +69,19 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
         text: result.text || undefined,
         image: result.image || undefined,
         updatedAt: result.updatedAt,
+        title: result.title || undefined,
+        location: result?.location || undefined,
       }) as SimpleVmsUnit) || [],
     }
   }
 }
 
-export const MatrixSign = ({ unit }: { unit: SimpleVmsUnit }) => {
-  if (!unit.image) return null;
-  const image: ImageData = JSON.parse(unit.image || '{}');
+export const MatrixSign = ({ display }: { display: SimpleVmsUnit }) => {
+  if (!display.image) return null;
+  const image: ImageData = JSON.parse(display.image || '{}');
   return (
     <Image
-      alt={unit.text?.split('\n').join(' ') || ''}
+      alt={display.text?.split('\n').join(' ') || ''}
       src={`data:${image.mimeType};base64,${image.binary}`}
     />
   )
@@ -94,12 +102,14 @@ export default function Drips({ simpleDrips }: Props) {
           <div className={styles.drip}>
             <h1>Drips stream</h1>
             <ul>
-              {simpleDrips?.map((unit: SimpleVmsUnit) => (
-                <li key={unit.id}>
-                  {!unit.image && unit.text?.split('\n').map((line: string) => <>{line}<br /></>)}
-                  <MatrixSign unit={unit} />
+              {simpleDrips?.map((display: SimpleVmsUnit) => (
+                <li key={display.id}>
+                  <h2>{display.title}</h2>
+                  <h3>{display.location}</h3>
+                  {!display.image && display.text?.split('\n').map((line: string) => <>{line}<br /></>)}
+                  <MatrixSign display={display} />
                   <br />
-                  {formatDistanceToNow(parseISO(unit.updatedAt), { locale: nl, addSuffix: true, includeSeconds: true })}
+                  {formatDistanceToNow(parseISO(display.updatedAt), { locale: nl, addSuffix: true, includeSeconds: true })}
                 </li>
               ))}
             </ul>
