@@ -1,27 +1,15 @@
 import styles from '@/styles/Home.module.css';
 import { D1Database } from '@cloudflare/workers-types';
 
+import MatrixSign from '@/components/matrix-sign';
+import { SimpleVmsUnit } from '@/types/display';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { nl } from 'date-fns/locale';
 import parseISO from 'date-fns/parseISO';
 import { GetServerSideProps, GetServerSidePropsResult } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import { D1QB, OrderTypes } from 'workers-qb';
 
-interface ImageData {
-  binary: string;
-  encoding: string;
-  mimeType: string;
-}
-export interface SimpleVmsUnit {
-  id: string;
-  updatedAt: string;
-  image?: string;
-  text?: string;
-  title: string;
-  location: string;
-}
 interface Props {
   simpleDrips: SimpleVmsUnit[];
 }
@@ -76,16 +64,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
   }
 }
 
-export const MatrixSign = ({ display }: { display: SimpleVmsUnit }) => {
-  if (!display.image) return null;
-  const image: ImageData = JSON.parse(display.image || '{}');
-  return (
-    <Image
-      alt={display.text?.split('\n').join(' ') || ''}
-      src={`data:${image.mimeType};base64,${image.binary}`}
-    />
-  )
-}
 
 
 export default function Drips({ simpleDrips }: Props) {
@@ -107,7 +85,7 @@ export default function Drips({ simpleDrips }: Props) {
                   <h2>{display.title}</h2>
                   <h3>{display.location}</h3>
                   {!display.image && display.text?.split('\n').map((line: string) => <>{line}<br /></>)}
-                  <MatrixSign display={display} />
+                  {display.image && <MatrixSign image={JSON.parse(display.image)} />}
                   <br />
                   {formatDistanceToNow(parseISO(display.updatedAt), { locale: nl, addSuffix: true, includeSeconds: true })}
                 </li>
