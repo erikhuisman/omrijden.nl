@@ -1,5 +1,5 @@
+import { simplifyIncident } from '@omrijden/simplify';
 import xmlNodeStream from '@omrijden/xml-node-stream';
-import { XMLParser } from 'fast-xml-parser';
 
 /**
  * Welcome to Cloudflare Workers! This is your first worker.
@@ -28,41 +28,51 @@ export interface Env {
 const tagName = 'situation';
 const endpoint = 'https://opendata.ndw.nu/incidents.xml.gz';
 
-const parser = new XMLParser({
-  attributeNamePrefix: '@_',
-  ignoreAttributes: false,
-  ignoreDeclaration: true,
-});
+const syncIncidents = async (env: Env) => {
+
+  const result = await fetch(endpoint);
+  if (!result.body) return new Response('ok: no body', { status: 500 });
+
+  let lastPutItem: Promise<void> | undefined;
+
+  const { writable, endOfStream } = xmlNodeStream(
+    tagName,
+    (xmlNode: string) => {
+      try {
+        const incident = simplifyIncident(xmlNode);
+        env.STORE.put(`${incident.startedAt}.${incident.id}`, JSON.stringify(xmlNode));
+      } catch (e) {
+        console.error(e);
+      }
+    },
+  );
+
+
+  result.body
+    .pipeThrough(new DecompressionStream('gzip'))
+    .pipeThrough(new TextDecoderStream())
+    .pipeTo(writable);
+
+  const nodeCount = await endOfStream;
+  if (lastPutItem) await lastPutItem;
+  return nodeCount
+};
+
 
 export default {
+  async scheduled(
+    event: ScheduledEvent,
+    env: Env,
+    ctx: ExecutionContext,
+  ): Promise<Response | void> {
+    return ctx.waitUntil(syncIncidents(env));
+  },
   async fetch(
     request: Request,
     env: Env,
     ctx: ExecutionContext,
   ): Promise<Response> {
-    const result = await fetch(endpoint);
-    if (!result.body) return new Response('ok: no body', { status: 500 });
-
-    let lastPutItem: Promise<void> | undefined;
-
-    const { writable, endOfStream } = xmlNodeStream(
-      tagName,
-      (xmlNode: string) => {
-        const { situation } = parser.parse(xmlNode);
-        lastPutItem = env.STORE.put(
-          `${tagName}:${situation['@_id']}`,
-          JSON.stringify(situation, null, 2),
-        );
-      },
-    );
-
-    result.body
-      .pipeThrough(new DecompressionStream('gzip'))
-      .pipeThrough(new TextDecoderStream())
-      .pipeTo(writable);
-
-    const nodeCount = await endOfStream;
-    if (lastPutItem) await lastPutItem;
+    const nodeCount = await syncIncidents(env);
     return new Response(`ok: ${nodeCount} items`);
   },
 };

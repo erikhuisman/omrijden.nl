@@ -13,6 +13,7 @@
     "wrangler": "wrangler"
   },
   "dependencies": {
+    "@omrijden/simplify": "*",
     "@omrijden/xml-node-stream": "*",
     "fast-xml-parser": "^4.2.2"
   }

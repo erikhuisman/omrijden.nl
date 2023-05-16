@@ -1,25 +1,10 @@
 import { XMLParser } from 'fast-xml-parser';
-import { CarriagewayEnum, PhysicalMountingEnum, VmsTypeEnum } from './datexII';
+import { CarriagewayEnum, PhysicalMountingEnum, ValidityStatusEnum, VehicleObstructionTypeEnum, VmsTypeEnum } from './datexII';
 
 interface ImageData {
   binary: string;
   encoding: string;
   mimeType: string;
-}
-
-export interface DripDisplay {
-  id: string;
-  updatedAt: string;
-  image?: ImageData;
-  text?: string;
-}
-export interface DripLocation {
-  id: string;
-  title: string;
-  location: GeoJSON.Point;
-  mounting: PhysicalMountingEnum;
-  type: VmsTypeEnum;
-  carriageway: CarriagewayEnum;
 }
 
 const parser = new XMLParser({
@@ -32,6 +17,13 @@ const arrayify = (maybeArray: any) => {
   if (!maybeArray) return [];
   return Array.isArray(maybeArray) ? maybeArray : [maybeArray];
 };
+
+export interface DripDisplay {
+  id: string;
+  updatedAt: string;
+  image?: ImageData;
+  text?: string;
+}
 
 // The current state of drip display
 export const simplifyDripDisplay = (xmlNode: string): DripDisplay => {
@@ -50,6 +42,15 @@ export const simplifyDripDisplay = (xmlNode: string): DripDisplay => {
   };
   return simplified;
 };
+
+export interface DripLocation {
+  id: string;
+  title: string;
+  location: GeoJSON.Point;
+  mounting: PhysicalMountingEnum;
+  type: VmsTypeEnum;
+  carriageway: CarriagewayEnum;
+}
 
 // The current state of drip display
 export const simplifyDripLocation = (xmlNode: string): DripLocation => {
@@ -82,6 +83,30 @@ export const simplifyDripLocation = (xmlNode: string): DripLocation => {
           .longitude,
       ],
     },
+  };
+  return simplified;
+};
+
+export interface Incident {
+  id: string;
+  type: VehicleObstructionTypeEnum
+  startedAt: string
+  endedAt?: string
+  updatedAt?: string
+  status: ValidityStatusEnum
+  source: string
+}
+
+export const simplifyIncident = (xmlNode: string): Incident => {
+  const { situation } = parser.parse(xmlNode);
+  const simplified: Incident = {
+    id: situation.id,
+    type: situation.situationRecord['xsi:type'],
+    startedAt: situation.situationRecord.validity.validityTimeSpecification.overallStartTime,
+    endedAt: situation.situationRecord.validity.validityTimeSpecification.overallEndTime,
+    updatedAt: situation.situationRecord.situationRecordVersionTime,
+    status: situation.situationRecord.validity.validityStatus,
+    source: situation.situationRecord.source.sourceName.values.value['#text'],
   };
   return simplified;
 };

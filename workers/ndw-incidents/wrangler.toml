@@ -5,7 +5,7 @@ usage_model = "bundled"
 logpush = true
 
 kv_namespaces = [
-  { binding = "STORE", id = "430a50bad9ae4147bc343b7103c2502d", preview_id = "430a50bad9ae4147bc343b7103c2502d" },
+  { binding = "STORE", id = "40310adcd3604e36b90d859c692c8cd5", preview_id = "40310adcd3604e36b90d859c692c8cd5" },
 ]
 
 [triggers]
