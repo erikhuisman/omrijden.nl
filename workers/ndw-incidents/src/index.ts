@@ -39,8 +39,9 @@ const syncIncidents = async (env: Env) => {
     tagName,
     (xmlNode: string) => {
       try {
-        const incident = simplifyIncident(xmlNode);
-        env.STORE.put(`${incident.startedAt}.${incident.id}`, JSON.stringify(xmlNode));
+        const { situation, simplified } = simplifyIncident(xmlNode);
+        const
+          lastPutItem = env.STORE.put(`${simplified.startedAt}.${simplified.id}`, JSON.stringify(situation));
       } catch (e) {
         console.error(e);
       }

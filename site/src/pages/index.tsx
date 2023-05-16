@@ -15,6 +15,7 @@ export default function Home() {
         <div className={styles.grid}>
           <ul>
             <li><Link href="/drips">Drips stream</Link></li>
+            <li><Link href="/incidents">Incidents stream</Link></li>
           </ul>
         </div>
       </main>
