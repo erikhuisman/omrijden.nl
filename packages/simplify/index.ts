@@ -97,7 +97,7 @@ export interface Incident {
   source: string
 }
 
-export const simplifyIncident = (xmlNode: string): Incident => {
+export const simplifyIncident = (xmlNode: string) => {
   const { situation } = parser.parse(xmlNode);
   const simplified: Incident = {
     id: situation.id,
@@ -108,5 +108,5 @@ export const simplifyIncident = (xmlNode: string): Incident => {
     status: situation.situationRecord.validity.validityStatus,
     source: situation.situationRecord.source.sourceName.values.value['#text'],
   };
-  return simplified;
+  return { situation, simplified };
 };
