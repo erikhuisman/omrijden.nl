@@ -64,8 +64,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params, quer
   }
 }
 
-
-
 export default function Drips({ simpleDrips }: Props) {
   return (
     <>

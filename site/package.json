@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "watch": "npx @cloudflare/next-on-pages --watch",
-    "dev": "npx wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat --local --d1=DB",
+    "dev": "npx wrangler pages dev .vercel/output/static --d1=DB --persist-to=../../.wrangler/state",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
