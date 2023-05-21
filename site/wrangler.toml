@@ -1,15 +1,7 @@
-name = "ndw-drips"
-main = "src/index.ts"
-compatibility_date = "2023-04-22"
-usage_model = "unbound"
-logpush = true
-
 kv_namespaces = [
+  { binding = "INCIDENTS", id = "40310adcd3604e36b90d859c692c8cd5", preview_id = "40310adcd3604e36b90d859c692c8cd5" },
   { binding = "DRIPS", id = "60970b8875be4ed6ae8f756d34231a29", preview_id = "60970b8875be4ed6ae8f756d34231a29" },
 ]
-
-[triggers]
-crons = ["*/5 * * * *"]
 
 [[ d1_databases ]]
 binding = "DB" # i.e. available in your Worker on env.DB

@@ -1,6 +1,6 @@
 import { simplifyDripDisplay } from '@omrijden/simplify';
 import xmlNodeStream from '@omrijden/xml-node-stream';
-import { D1QB, Result } from 'workers-qb';
+import { D1QB, D1Result } from 'workers-qb';
 
 /**
  * Welcome to Cloudflare Workers! This is your first worker.
@@ -11,6 +11,21 @@ import { D1QB, Result } from 'workers-qb';
  *
  * Learn more at https://developers.cloudflare.com/workers/
  */
+
+export interface Env {
+  // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
+  DRIPS: KVNamespace;
+  //
+  // Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
+  // MY_DURABLE_OBJECT: DurableObjectNamespace;
+  //
+  // Example binding to R2. Learn more at https://developers.cloudflare.com/workers/runtime-apis/r2/
+  // MY_BUCKET: R2Bucket;
+  //
+  // Example binding to a Service. Learn more at https://developers.cloudflare.com/workers/runtime-apis/service-bindings/
+  // MY_SERVICE: Fetcher;
+}
+
 
 export interface Env {
   // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
@@ -41,7 +56,7 @@ const syncDrips = async (env: Env) => {
   const result = await fetch(endpoint);
   if (!result.body) return new Response('ok: no body', { status: 500 });
 
-  let lastInsert: Promise<Result> | undefined;
+  let lastInsert: Promise<D1Result> | undefined;
 
   const { writable, endOfStream } = xmlNodeStream(
     tagName,
@@ -51,6 +66,10 @@ const syncDrips = async (env: Env) => {
       // skip update if no text or image
       if (!display.text && !display.image) return;
 
+      // store each display in KV
+      env.DRIPS.put(`${display.id}:${display.updatedAt}`, JSON.stringify(display));
+
+      // store latest display in DB
       lastInsert = qb.insert({
         tableName: 'display',
         data: {

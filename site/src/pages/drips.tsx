@@ -8,6 +8,7 @@ import { nl } from 'date-fns/locale';
 import parseISO from 'date-fns/parseISO';
 import { GetServerSideProps, GetServerSidePropsResult } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import { D1QB, OrderTypes } from 'workers-qb';
 
 interface Props {
@@ -31,6 +32,10 @@ export const config = {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, params, query }): Promise<GetServerSidePropsResult<Props>> => {
   const { DB } = (process.env as { DB: D1Database })
+
+  console.log({
+    env: JSON.stringify(Object.keys(process.env.DB)),
+  })
 
   const qb = new D1QB(DB);
 
@@ -76,12 +81,16 @@ export default function Drips({ simpleDrips }: Props) {
       <main className={styles.main}>
         <div className={styles.grid}>
           <div className={styles.drip}>
+            <Link href="/">Home</Link>
             <h1>Drips stream</h1>
             <ul>
               {simpleDrips?.map((display: SimpleVmsUnit) => (
                 <li key={display.id}>
-                  <h2>{display.title}</h2>
-                  <h3>{display.location}</h3>
+                  <h2>
+                    <Link href={`/drip/${display.id}`}>
+                      {display.title}
+                    </Link>
+                  </h2>
                   {!display.image && display.text?.split('\n').map((line: string) => <>{line}<br /></>)}
                   {display.image && <MatrixSign image={JSON.parse(display.image)} />}
                   <br />
