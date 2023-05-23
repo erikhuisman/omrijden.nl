@@ -70,6 +70,13 @@ const syncDrips = async (env: Env) => {
         }
       }
 
+      // make timestamp from iso string
+      const timestamp = new Date(display.updatedAt).getTime();
+
+      // store each display in KV
+      env.DRIPS.put(`${display.id}:${10_000_000_000_000 - timestamp}`, JSON.stringify(display));
+
+      // store latest display in DB
       await qb.delete({
         tableName: 'display',
         where: {
@@ -78,13 +85,6 @@ const syncDrips = async (env: Env) => {
         },
       });
 
-      // make timestamp from iso string
-      const timestamp = new Date(display.updatedAt).getTime();
-
-      // store each display in KV
-      env.DRIPS.put(`${display.id}:${10_000_000_000_000 - timestamp}`, JSON.stringify(display));
-
-      // store latest display in DB
       lastInsert = qb.insert({
         tableName: 'display',
         data: {
