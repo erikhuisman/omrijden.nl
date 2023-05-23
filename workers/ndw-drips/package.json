@@ -2,10 +2,10 @@
   "name": "ndw-drips",
   "version": "0.0.0",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20230511.0",
+    "@cloudflare/workers-types": "^4.20230518.0",
     "better-sqlite3": "^8.4.0",
     "typescript": "^5.0.4",
-    "wrangler": "3.0.0"
+    "wrangler": "3.0.1"
   },
   "private": true,
   "scripts": {
@@ -17,6 +17,6 @@
   "dependencies": {
     "@omrijden/simplify": "*",
     "@omrijden/xml-node-stream": "*",
-    "workers-qb": "^0.1.7"
+    "workers-qb": "^0.1.9"
   }
 }

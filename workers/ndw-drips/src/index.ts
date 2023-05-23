@@ -66,8 +66,11 @@ const syncDrips = async (env: Env) => {
       // skip update if no text or image
       if (!display.text && !display.image) return;
 
+      // make timestamp from iso string
+      const timestamp = new Date(display.updatedAt).getTime();
+
       // store each display in KV
-      env.DRIPS.put(`${display.id}:${display.updatedAt}`, JSON.stringify(display));
+      env.DRIPS.put(`${display.id}:${10_000_000_000_000 - timestamp}`, JSON.stringify(display));
 
       // store latest display in DB
       lastInsert = qb.insert({

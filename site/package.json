@@ -11,23 +11,23 @@
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^0.10.1",
-    "@types/node": "20.2.2",
+    "@types/node": "20.2.3",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
     "better-sqlite3": "^8.4.0",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.3",
     "semver": "^7.5.1",
-    "wrangler": "^3.0.0"
+    "wrangler": "^3.0.1"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "^4.20230511.0",
+    "@cloudflare/workers-types": "^4.20230518.0",
     "date-fns": "^2.30.0",
     "next": "13.4.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "slugify": "^1.6.6",
     "typescript": "5.0.4",
-    "workers-qb": "^0.1.7"
+    "workers-qb": "^0.1.9"
   }
 }
