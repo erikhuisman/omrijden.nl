@@ -1,4 +1,4 @@
-import { simplifyDripDisplay } from '@omrijden/simplify';
+import { DripDisplay, simplifyDripDisplay } from '@omrijden/simplify';
 import xmlNodeStream from '@omrijden/xml-node-stream';
 import { D1QB, D1Result } from 'workers-qb';
 
@@ -46,12 +46,6 @@ const endpoint = 'https://opendata.ndw.nu/DRIPS.xml.gz';
 
 const syncDrips = async (env: Env) => {
   const qb = new D1QB(env.DB);
-  await qb.delete({
-    tableName: 'display',
-    where: {
-      conditions: ['id is not null'],
-    },
-  });
 
   const result = await fetch(endpoint);
   if (!result.body) return new Response('ok: no body', { status: 500 });
@@ -60,11 +54,29 @@ const syncDrips = async (env: Env) => {
 
   const { writable, endOfStream } = xmlNodeStream(
     tagName,
-    (xmlNode: string) => {
+    async (xmlNode: string) => {
       const display = simplifyDripDisplay(xmlNode);
 
       // skip update if no text or image
       if (!display.text && !display.image) return;
+
+      // skip if the image is the same as the last one
+      const lastDrips = await env.DRIPS.list({ prefix: display.id, limit: 1 });
+      if (lastDrips.keys.length > 0) {
+        const lastDrip = await env.DRIPS.get(lastDrips.keys[0].name);
+        if (lastDrip) {
+          const lastDripDisplay = JSON.parse(lastDrip) as DripDisplay;
+          if (lastDripDisplay.image?.binary === display.image?.binary) return;
+        }
+      }
+
+      await qb.delete({
+        tableName: 'display',
+        where: {
+          conditions: `id is ?1`,
+          params: [display.id],
+        },
+      });
 
       // make timestamp from iso string
       const timestamp = new Date(display.updatedAt).getTime();

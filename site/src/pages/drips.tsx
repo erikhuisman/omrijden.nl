@@ -31,13 +31,8 @@ export const config = {
 
 
 export const getServerSideProps: GetServerSideProps = async ({ req, params, query }): Promise<GetServerSidePropsResult<Props>> => {
-  const { DB } = (process.env as { DB: D1Database })
 
-  console.log({
-    env: JSON.stringify(Object.keys(process.env.DB)),
-  })
-
-  const qb = new D1QB(DB);
+  const qb = new D1QB(process.env.DB);
 
   const fetched = await qb.fetchAll({
     tableName: 'display',

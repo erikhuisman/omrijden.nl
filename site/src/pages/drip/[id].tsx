@@ -55,6 +55,7 @@ export default function Drips({ simpleDrips }: Props) {
                 <div className={styles.grid}>
                     <div className={styles.drip}>
                         <Link href="/">Home</Link>
+                        {' | '}
                         <Link href="/drips">Drips</Link>
                         <h1>Drips stream</h1>
                         <ul>
